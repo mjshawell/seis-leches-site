@@ -17,17 +17,28 @@ const field = 'min-h-12 rounded-md border-[1.5px] border-field bg-paper px-3.5 f
       </p>
     </div>
 
-    <!-- Netlify Forms: submissions appear in the Netlify dashboard. Swap for a HubSpot form later. -->
+    <!--
+      Netlify Forms stores each submission and filters spam. A Netlify outgoing webhook then
+      sends it to the Google Apps Script in integrations/google-sheets, which adds a row to
+      the "Inbound" tab of the Seis Leches Lead Tracker and emails an alert.
+    -->
     <form
       name="strategy-call"
       method="POST"
-      action="/thanks"
+      action="/thanks/"
       data-netlify="true"
       netlify-honeypot="company-url"
+      data-lead-form
       class="flex min-w-0 flex-[1_1_420px] flex-col gap-4.5 rounded-xl bg-paper p-6 text-ink sm:p-8 [&_:focus-visible]:outline-ink"
     >
       <input type="hidden" name="form-name" value="strategy-call" />
       <p class="hidden"><label>Leave this empty <input name="company-url" /></label></p>
+      <!-- Attribution, filled in by the script below -->
+      <input type="hidden" name="source_page" value="" />
+      <input type="hidden" name="referrer" value="" />
+      <input type="hidden" name="utm_source" value="" />
+      <input type="hidden" name="utm_medium" value="" />
+      <input type="hidden" name="utm_campaign" value="" />
       <div class="flex flex-wrap gap-4.5">
         <label class="flex flex-[1_1_180px] flex-col gap-2 text-sm font-semibold">Name
           <input class={field} type="text" name="name" autocomplete="name" required placeholder="Jane Rivera" />
@@ -48,3 +59,35 @@ const field = 'min-h-12 rounded-md border-[1.5px] border-field bg-paper px-3.5 f
     </form>
   </div>
 </section>
+
+<script>
+  // Lead attribution. The first page a visitor lands on in a session carries the UTM tags
+  // and the outside referrer, so keep those until they submit, even after they click around.
+  const KEY = 'sl-attribution';
+  const params = new URLSearchParams(location.search);
+  const fromUrl = {
+    utm_source: params.get('utm_source') ?? '',
+    utm_medium: params.get('utm_medium') ?? '',
+    utm_campaign: params.get('utm_campaign') ?? '',
+  };
+  const externalReferrer = document.referrer && new URL(document.referrer).host !== location.host ? document.referrer : '';
+
+  let saved: Record<string, string> = {};
+  try { saved = JSON.parse(sessionStorage.getItem(KEY) ?? '{}'); } catch {}
+  if (fromUrl.utm_source || !saved.landing_page) {
+    saved = { ...fromUrl, referrer: externalReferrer || saved.referrer || '', landing_page: location.pathname };
+    try { sessionStorage.setItem(KEY, JSON.stringify(saved)); } catch {}
+  }
+
+  document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    const set = (name: string, value: string) => {
+      const input = form.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+      if (input) input.value = value;
+    };
+    set('source_page', saved.landing_page || location.pathname);
+    set('referrer', saved.referrer || '(direct)');
+    set('utm_source', saved.utm_source ?? '');
+    set('utm_medium', saved.utm_medium ?? '');
+    set('utm_campaign', saved.utm_campaign ?? '');
+  });
+</script>
