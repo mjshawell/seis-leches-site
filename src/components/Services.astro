@@ -2,7 +2,7 @@
 import { services } from '../data/site';
 ---
 <section id="services" class="container-site scroll-mt-20 pb-24 pt-28">
-  <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+  <div class="mb-12 flex flex-wrap items-end justify-between gap-6" data-reveal-stagger>
     <div class="max-w-[640px]">
       <p class="eyebrow mb-4">What we do</p>
       <h2 class="heading-section">One loop, three disciplines. Each one feeds the next.</h2>
@@ -12,7 +12,7 @@ import { services } from '../data/site';
     </p>
   </div>
 
-  <div class="grid gap-6 md:grid-cols-3">
+  <div class="grid gap-6 md:grid-cols-3" data-reveal-stagger>
     {services.map((s) => (
       <article class:list={[
         'flex flex-col gap-4 rounded-lg border-[1.5px] border-ink p-8',

@@ -1,17 +1,116 @@
 ---
-import { testimonial } from '../data/site';
+import { testimonials } from '../data/site';
 ---
-<section aria-label="Testimonial" class="bg-panel px-4 py-24">
-  <figure class="mx-auto max-w-[880px] text-center">
-    <blockquote class="text-[clamp(24px,2.6vw,34px)] font-semibold leading-snug tracking-[-0.02em]">
-      “{testimonial.quote}”
-    </blockquote>
-    <figcaption class="mt-7 flex items-center justify-center gap-3.5">
-      <span class="ph h-12 w-12 rounded-full" aria-hidden="true"></span>
-      <span class="text-left text-[15px]">
-        <strong class="block">{testimonial.name}</strong>
-        <span class="text-muted">{testimonial.role}</span>
-      </span>
-    </figcaption>
-  </figure>
+<section aria-roledescription="carousel" aria-label="Client testimonials" class="bg-panel px-4 py-24" data-quotes>
+  <div class="mx-auto max-w-[880px] text-center" data-reveal>
+    <p class="eyebrow mb-8">What clients say</p>
+
+    <!-- All slides share one grid cell, so the section never jumps in height between quotes. -->
+    <div class="grid" aria-live="off" data-quotes-viewport>
+      {testimonials.map((t, i) => (
+        <figure
+          class:list={[
+            'col-start-1 row-start-1 transition-opacity duration-700 ease-out',
+            i === 0 ? 'opacity-100' : 'pointer-events-none invisible opacity-0',
+          ]}
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${testimonials.length}`}
+          aria-hidden={i === 0 ? undefined : 'true'}
+          data-quote
+        >
+          <blockquote class="text-balance text-[clamp(24px,2.6vw,34px)] font-semibold leading-snug tracking-[-0.02em]">
+            “{t.quote}”
+          </blockquote>
+          <figcaption class="mt-7 flex items-center justify-center gap-3.5">
+            <span class="ph h-12 w-12 rounded-full" aria-hidden="true"></span>
+            <span class="text-left text-[15px]">
+              <strong class="block">{t.name}</strong>
+              <span class="text-muted">{t.role}</span>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <div class="mt-10 flex items-center justify-center gap-2">
+      <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-frame hover:border-ink" aria-label="Previous quote" data-quotes-prev>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+      </button>
+      <div class="flex items-center">
+        {testimonials.map((_, i) => (
+          <button type="button" class="group flex h-11 w-8 items-center justify-center" aria-label={`Show quote ${i + 1}`} aria-current={i === 0 ? 'true' : undefined} data-quotes-dot>
+            <span class="h-2 w-2 rounded-full bg-frame transition-all group-aria-[current=true]:w-6 group-aria-[current=true]:bg-ink"></span>
+          </button>
+        ))}
+      </div>
+      <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full border border-frame hover:border-ink" aria-label="Next quote" data-quotes-next>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+      </button>
+      <button type="button" class="ml-2 flex h-11 w-11 items-center justify-center rounded-full border border-frame hover:border-ink" aria-label="Pause rotation" data-quotes-toggle>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" data-icon="pause"><rect x="2" y="1" width="3.5" height="12" rx="1" /><rect x="8.5" y="1" width="3.5" height="12" rx="1" /></svg>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" data-icon="play" class="hidden"><path d="M3 1.5v11l9.5-5.5z" /></svg>
+      </button>
+    </div>
+  </div>
 </section>
+
+<script>
+  const INTERVAL = 6500;
+
+  document.querySelectorAll<HTMLElement>('[data-quotes]').forEach((root) => {
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-quote]')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-quotes-dot]')];
+    const viewport = root.querySelector<HTMLElement>('[data-quotes-viewport]')!;
+    const toggle = root.querySelector<HTMLButtonElement>('[data-quotes-toggle]')!;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer: number | undefined;
+    let userPaused = reduceMotion; // no auto-rotation for people who ask for less motion
+    let hovering = false;
+
+    const hiddenClasses = ['pointer-events-none', 'invisible', 'opacity-0'];
+
+    const show = (next: number) => {
+      current = (next + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        const active = i === current;
+        s.classList.toggle('opacity-100', active);
+        hiddenClasses.forEach((c) => s.classList.toggle(c, !active));
+        if (active) s.removeAttribute('aria-hidden');
+        else s.setAttribute('aria-hidden', 'true');
+      });
+      dots.forEach((d, i) => (i === current ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+    };
+
+    const stop = () => { window.clearInterval(timer); timer = undefined; };
+    const start = () => {
+      stop();
+      if (userPaused || hovering || document.hidden) return;
+      timer = window.setInterval(() => show(current + 1), INTERVAL);
+    };
+
+    const setPaused = (paused: boolean) => {
+      userPaused = paused;
+      toggle.setAttribute('aria-label', paused ? 'Play rotation' : 'Pause rotation');
+      toggle.querySelector('[data-icon="pause"]')!.classList.toggle('hidden', paused);
+      toggle.querySelector('[data-icon="play"]')!.classList.toggle('hidden', !paused);
+      // Announce changes only when the visitor is driving the carousel.
+      viewport.setAttribute('aria-live', paused ? 'polite' : 'off');
+      start();
+    };
+
+    const manual = (next: number) => { show(next); start(); };
+    root.querySelector('[data-quotes-prev]')!.addEventListener('click', () => manual(current - 1));
+    root.querySelector('[data-quotes-next]')!.addEventListener('click', () => manual(current + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => manual(i)));
+    toggle.addEventListener('click', () => setPaused(!userPaused));
+
+    root.addEventListener('mouseenter', () => { hovering = true; stop(); });
+    root.addEventListener('mouseleave', () => { hovering = false; start(); });
+    root.addEventListener('focusin', () => { hovering = true; stop(); });
+    root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget as Node)) { hovering = false; start(); } });
+    document.addEventListener('visibilitychange', start);
+
+    setPaused(userPaused);
+  });
+</script>

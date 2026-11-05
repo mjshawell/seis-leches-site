@@ -23,6 +23,7 @@ const jsonLd = {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -39,5 +40,21 @@ const jsonLd = {
   <body>
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-3 focus:text-paper">Skip to content</a>
     <slot />
+    <script is:inline>
+      (() => {
+        const groups = document.querySelectorAll('[data-reveal-stagger]');
+        groups.forEach((g) => [...g.children].forEach((el, i) => el.style.setProperty('--reveal-delay', `${Math.min(i, 6) * 90}ms`)));
+        const targets = document.querySelectorAll('[data-reveal], [data-reveal-stagger] > *');
+        const show = (el) => el.classList.add('is-visible');
+        if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          targets.forEach(show);
+          return;
+        }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+        }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+        targets.forEach((el) => io.observe(el));
+      })();
+    </script>
   </body>
 </html>
