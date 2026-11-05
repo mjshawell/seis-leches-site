@@ -2,14 +2,14 @@
 import { team } from '../data/site';
 ---
 <section id="team" class="container-site scroll-mt-20 pb-24 pt-28">
-  <div class="mx-auto mb-14 max-w-[720px] text-center">
+  <div class="mx-auto mb-14 max-w-[720px] text-center" data-reveal-stagger>
     <p class="eyebrow mb-4">The team</p>
     <h2 class="heading-section">Tres leches has three. We have six.</h2>
     <p class="mt-5 text-[17px] leading-relaxed text-body">
       Graduate-trained marketers from Cal Poly Pomona's M.S. in Digital Marketing, each leading a part of the loop.
     </p>
   </div>
-  <ul class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">
+  <ul data-reveal-stagger class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">
     {team.map((m) => (
       <li>
         <div class="ph aspect-[3/4] rounded-lg" role="img" aria-label={`Portrait placeholder, ${m.role}`}></div>

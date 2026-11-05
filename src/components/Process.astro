@@ -3,9 +3,9 @@ import { process } from '../data/site';
 ---
 <section id="process" class="scroll-mt-20 border-t border-line py-26">
   <div class="container-site">
-    <p class="eyebrow mb-4">How we work</p>
-    <h2 class="heading-section mb-14 max-w-[680px]">From first call to first dashboard in 30 days.</h2>
-    <ol class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <p class="eyebrow mb-4" data-reveal>How we work</p>
+    <h2 data-reveal style="--reveal-delay: 90ms" class="heading-section mb-14 max-w-[680px]">From first call to first dashboard in 30 days.</h2>
+    <ol data-reveal-stagger class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {process.map((p) => (
         <li class="border-t-2 border-ink pt-6">
           <p class="text-sm font-bold text-muted">{p.n}</p>

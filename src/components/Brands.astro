@@ -1,0 +1,48 @@
+---
+import { brands } from '../data/site';
+// To use real logos later: swap the <span> for <img src="/logos/x.svg" alt="Brand name" class="h-8 w-auto opacity-80 grayscale" />
+const sets = [{ dup: false }, { dup: true }];
+---
+<section aria-labelledby="brands-title" class="on-ink overflow-hidden bg-ink py-18 text-paper">
+  <div class="container-site mb-10 flex flex-wrap items-end justify-between gap-4" data-reveal-stagger>
+    <div>
+      <p class="eyebrow mb-3 text-ink-muted">Brands we've helped</p>
+      <h2 id="brands-title" class="text-balance text-[clamp(26px,2.8vw,36px)] font-extrabold leading-tight tracking-[-0.03em]">
+        Trusted by teams who need marketing they can measure.
+      </h2>
+    </div>
+    <button type="button" class="marquee-toggle inline-flex min-h-11 items-center gap-2 rounded-md border border-ink-line px-4 text-sm font-semibold hover:border-paper" aria-pressed="false" data-marquee-toggle>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" data-icon="pause"><rect x="2" y="1" width="3.5" height="12" rx="1" /><rect x="8.5" y="1" width="3.5" height="12" rx="1" /></svg>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" data-icon="play" class="hidden"><path d="M3 1.5v11l9.5-5.5z" /></svg>
+      <span data-label>Pause</span>
+    </button>
+  </div>
+
+  <div class="marquee" data-marquee>
+    <ul class="marquee-track flex gap-5" aria-label="Client brands">
+      {sets.map(({ dup }) =>
+        brands.map((b) => (
+          <li class:list={['shrink-0', dup && 'marquee-dup']} aria-hidden={dup ? 'true' : undefined}>
+            <span class="flex h-16 w-44 items-center justify-center rounded-lg border border-ink-line text-sm font-semibold tracking-wide text-ink-muted">
+              {b}
+            </span>
+          </li>
+        ))
+      )}
+    </ul>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-marquee-toggle]').forEach((btn) => {
+    const marquee = btn.closest('section')?.querySelector('[data-marquee]');
+    if (!marquee) return;
+    btn.addEventListener('click', () => {
+      const paused = marquee.classList.toggle('is-paused');
+      btn.setAttribute('aria-pressed', String(paused));
+      btn.querySelector('[data-label]')!.textContent = paused ? 'Play' : 'Pause';
+      btn.querySelector('[data-icon="pause"]')!.classList.toggle('hidden', paused);
+      btn.querySelector('[data-icon="play"]')!.classList.toggle('hidden', !paused);
+    });
+  });
+</script>

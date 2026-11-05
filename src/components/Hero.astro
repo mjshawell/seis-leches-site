@@ -2,7 +2,7 @@
 import { site } from '../data/site';
 ---
 <section id="top" class="container-site flex flex-wrap items-center gap-14 pb-20 pt-16 md:pt-24">
-  <div class="min-w-0 flex-[1_1_540px]">
+  <div class="min-w-0 flex-[1_1_540px]" data-reveal-stagger>
     <p class="eyebrow mb-5">Full-funnel marketing agency · {site.location}</p>
     <h1 class="text-balance font-display text-[clamp(42px,5.6vw,76px)] font-extrabold leading-[1.02] tracking-[-0.035em]">
       {site.tagline}
@@ -16,7 +16,7 @@ import { site } from '../data/site';
     </div>
     <p class="mt-6 text-sm text-muted">Free 30-minute call · Leave with three quick wins</p>
   </div>
-  <div class="min-w-0 flex-[1_1_400px]">
+  <div class="min-w-0 flex-[1_1_400px]" data-reveal style="--reveal-delay: 200ms">
     <div class="ph flex aspect-[5/4] items-center justify-center rounded-lg" role="img" aria-label="Placeholder for hero image or short reel">
       <span class="rounded bg-paper px-3 py-1.5 text-[13px] font-semibold text-body">Hero image or short reel</span>
     </div>

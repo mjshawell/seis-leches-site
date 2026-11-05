@@ -59,12 +59,8 @@ export const services: Service[] = [
   },
 ];
 
-export const stats = [
-  { value: '[XX]', label: 'Clients served' },
-  { value: '[$XXk]', label: 'Ad spend managed' },
-  { value: '[XX]', label: 'Dashboards automated' },
-  { value: '6', label: 'Specialists, one team' },
-];
+// Brands carousel. Replace each label with a logo later (see Brands.astro).
+export const brands = Array.from({ length: 12 }, (_, i) => `[BRAND ${String(i + 1).padStart(2, '0')}]`);
 
 export const caseStudies = {
   feature: { tag: 'SEO · Analytics', title: '[CLIENT]: [one-line outcome headline]', stat: '[+XX%]', statLabel: '[metric]' },
@@ -74,11 +70,11 @@ export const caseStudies = {
   ],
 };
 
-export const testimonial = {
-  quote: '[Client quote about the result and what it was like working with the team.]',
-  name: '[Name]',
-  role: '[Title, Company]',
-};
+export const testimonials = [
+  { quote: '[Client quote about the result and what it was like working with the team.]', name: '[Name]', role: '[Title, Company 01]' },
+  { quote: '[A second client on the numbers: what moved, by how much, and how fast.]', name: '[Name]', role: '[Title, Company 02]' },
+  { quote: '[A third client on the experience: communication, reporting, how it felt to work together.]', name: '[Name]', role: '[Title, Company 03]' },
+];
 
 export const team = [
   { name: '[Name]', role: 'Brand & Creative Lead' },
