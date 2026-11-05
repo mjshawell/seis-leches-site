@@ -20,7 +20,7 @@ Netlify keeps its own copy of every submission (Forms tab), so nothing is lost i
 5. **Deploy → New deployment** → type **Web app** → *Execute as*: **Me** → *Who has access*: **Anyone** → **Deploy**.
    Copy the **Web app URL** (ends in `/exec`).
 6. In Netlify: **seis-leches → Project configuration → Environment variables → Add a variable**
-   - Key: `SHEETS_WEBHOOK_URL`, mark it **secret**
+   - Key: `SHEETS_WEBHOOK_URL` (only project members can see it; the "secret" flag needs a paid plan)
    - Value: `<Web app URL>?token=<token from step 3>`
    Then trigger a new deploy so the function picks it up.
 7. Submit the form on the live site once to confirm. Function logs: Netlify → **Logs → Functions →
