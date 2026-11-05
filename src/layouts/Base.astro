@@ -1,13 +1,17 @@
 ---
 import '../styles/global.css';
 import { site } from '../data/site';
+import { indexable } from '../lib/seo';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Keep this page out of search results even after launch (e.g. thank-you pages). */
+  noindex?: boolean;
 }
 
-const { title = `${site.name} | Full-funnel marketing agency`, description = site.description } = Astro.props;
+const { title = `${site.name} | Full-funnel marketing agency`, description = site.description, noindex = false } = Astro.props;
+const robots = noindex || !indexable ? 'noindex, nofollow' : 'index, follow';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -27,7 +31,9 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
