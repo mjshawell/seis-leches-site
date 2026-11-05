@@ -58,7 +58,7 @@ function doPost(e) {
       clean_(d.company),
       clean_(d.need),
       clean_(d.source_page),
-      clean_(d.referrer),
+      clean_(d.entry_referrer), // not d.referrer: Netlify fills that with its own value
       clean_(d.utm_source),
       clean_(d.utm_medium),
       clean_(d.utm_campaign),

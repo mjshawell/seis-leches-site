@@ -35,7 +35,7 @@ const field = 'min-h-12 rounded-md border-[1.5px] border-field bg-paper px-3.5 f
       <p class="hidden"><label>Leave this empty <input name="company-url" /></label></p>
       <!-- Attribution, filled in by the script below -->
       <input type="hidden" name="source_page" value="" />
-      <input type="hidden" name="referrer" value="" />
+      <input type="hidden" name="entry_referrer" value="" />
       <input type="hidden" name="utm_source" value="" />
       <input type="hidden" name="utm_medium" value="" />
       <input type="hidden" name="utm_campaign" value="" />
@@ -85,7 +85,7 @@ const field = 'min-h-12 rounded-md border-[1.5px] border-field bg-paper px-3.5 f
       if (input) input.value = value;
     };
     set('source_page', saved.landing_page || location.pathname);
-    set('referrer', saved.referrer || '(direct)');
+    set('entry_referrer', saved.referrer || '(direct)');
     set('utm_source', saved.utm_source ?? '');
     set('utm_medium', saved.utm_medium ?? '');
     set('utm_campaign', saved.utm_campaign ?? '');
