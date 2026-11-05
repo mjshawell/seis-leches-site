@@ -31,3 +31,20 @@ to the `@theme` block in `src/styles/global.css`, not to every component.
 ## Contact form
 
 Uses Netlify Forms (submissions show under Site → Forms in Netlify). Plan: swap to a HubSpot form.
+
+## Search engines (pre-launch)
+
+`src/lib/seo.ts` decides whether a build may be indexed:
+
+| Build | Indexed? |
+| --- | --- |
+| Production on `seis-leches.netlify.app` (now) | No: every page has `noindex` |
+| Deploy previews / branch deploys | No |
+| Production on a custom domain | **Yes, automatically** |
+
+Canonical links, `robots.txt` and the sitemap (`/sitemap-index.xml`) use Netlify's `URL`,
+which switches to the custom domain when you connect it. No code change is needed at launch.
+Override with the Netlify env var `SITE_INDEXING=on` or `off`.
+
+**At launch:** connect the domain in Netlify, wait for the next deploy, then submit
+`https://<domain>/sitemap-index.xml` in Google Search Console.
