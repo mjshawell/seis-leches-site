@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+/*
+  Design tokens. This is the B&W wireframe theme.
+  To apply the brand kit later, change the values here (and the font imports);
+  components only use these semantic names, never raw colors.
+*/
+@theme {
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-display: "Inter Variable", system-ui, sans-serif;
+
+  --color-paper: #ffffff;   /* page background */
+  --color-panel: #f4f4f4;   /* alternate section background */
+  --color-fill: #ededed;    /* image placeholders, logo slots */
+  --color-line: #e0e0e0;    /* hairlines, dividers */
+  --color-frame: #c4c4c4;   /* placeholder outlines */
+  --color-field: #8a8a8a;   /* form field borders (3:1 on paper) */
+  --color-muted: #555555;   /* eyebrows, captions (7.4:1 on paper) */
+  --color-body: #444444;    /* body copy (9.7:1 on paper) */
+  --color-ink: #111111;     /* headlines, primary actions, dark bands */
+  --color-ink-muted: #bbbbbb; /* secondary text on ink */
+  --color-ink-body: #cccccc;  /* body text on ink */
+  --color-ink-line: #333333;  /* dividers on ink */
+  --color-accent: #111111;  /* primary CTA; becomes terracotta with the brand kit */
+  --color-on-accent: #ffffff;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-paper text-ink font-sans antialiased; }
+  :focus-visible { outline: 3px solid var(--color-ink); outline-offset: 3px; }
+  .on-ink :focus-visible { outline-color: var(--color-paper); }
+}
+
+@utility container-site { @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6; }
+@utility eyebrow { @apply text-[13px] font-semibold uppercase tracking-[0.12em] text-muted; }
+@utility heading-section { @apply text-balance font-display text-[clamp(32px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em]; }
+@utility btn { @apply inline-flex min-h-[52px] items-center justify-center rounded-md px-7 text-base font-semibold transition-colors; }
+@utility btn-primary { @apply btn bg-accent text-on-accent hover:opacity-85; }
+@utility btn-secondary { @apply btn border-[1.5px] border-ink text-ink hover:bg-ink hover:text-paper; }
+@utility ph {
+  background-color: var(--color-fill);
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - 0.5px), var(--color-frame) calc(50% - 0.5px), var(--color-frame) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to top left, transparent calc(50% - 0.5px), var(--color-frame) calc(50% - 0.5px), var(--color-frame) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  border: 1px solid var(--color-frame);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

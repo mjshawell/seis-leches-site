@@ -1,0 +1,50 @@
+---
+import { site, needs } from '../data/site';
+const field = 'min-h-12 rounded-md border-[1.5px] border-field bg-paper px-3.5 font-normal text-ink';
+---
+<section id="contact" class="on-ink scroll-mt-20 bg-ink py-26 text-paper">
+  <div class="container-site flex flex-wrap items-start gap-14">
+    <div class="min-w-0 flex-[1_1_420px]">
+      <p class="eyebrow mb-4 text-ink-muted">Let's talk</p>
+      <h2 class="text-[clamp(34px,4.2vw,56px)] font-extrabold leading-[1.05] tracking-[-0.035em]">
+        Find out what your marketing is actually doing.
+      </h2>
+      <p class="mt-6 max-w-[460px] text-[17px] leading-relaxed text-ink-body">
+        Book a free 30-minute strategy call. You'll leave with three quick wins, whether or not we work together.
+      </p>
+      <p class="mt-8 text-[15px] text-ink-body">
+        Or email <a href={`mailto:${site.email}`} class="font-bold text-paper underline underline-offset-4">{site.email}</a>
+      </p>
+    </div>
+
+    <!-- Netlify Forms: submissions appear in the Netlify dashboard. Swap for a HubSpot form later. -->
+    <form
+      name="strategy-call"
+      method="POST"
+      action="/thanks"
+      data-netlify="true"
+      netlify-honeypot="company-url"
+      class="flex min-w-0 flex-[1_1_420px] flex-col gap-4.5 rounded-xl bg-paper p-6 text-ink sm:p-8 [&_:focus-visible]:outline-ink"
+    >
+      <input type="hidden" name="form-name" value="strategy-call" />
+      <p class="hidden"><label>Leave this empty <input name="company-url" /></label></p>
+      <div class="flex flex-wrap gap-4.5">
+        <label class="flex flex-[1_1_180px] flex-col gap-2 text-sm font-semibold">Name
+          <input class={field} type="text" name="name" autocomplete="name" required placeholder="Jane Rivera" />
+        </label>
+        <label class="flex flex-[1_1_180px] flex-col gap-2 text-sm font-semibold">Work email
+          <input class={field} type="email" name="email" autocomplete="email" required placeholder="jane@company.com" />
+        </label>
+      </div>
+      <label class="flex flex-col gap-2 text-sm font-semibold">Company
+        <input class={field} type="text" name="company" autocomplete="organization" placeholder="Company name" />
+      </label>
+      <label class="flex flex-col gap-2 text-sm font-semibold">What do you need most?
+        <select class={field} name="need">
+          {needs.map((n) => <option>{n}</option>)}
+        </select>
+      </label>
+      <button type="submit" class="btn-primary mt-1.5 w-full cursor-pointer">Book my strategy call</button>
+    </form>
+  </div>
+</section>

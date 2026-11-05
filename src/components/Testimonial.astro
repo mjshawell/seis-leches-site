@@ -1,0 +1,17 @@
+---
+import { testimonial } from '../data/site';
+---
+<section aria-label="Testimonial" class="bg-panel px-4 py-24">
+  <figure class="mx-auto max-w-[880px] text-center">
+    <blockquote class="text-[clamp(24px,2.6vw,34px)] font-semibold leading-snug tracking-[-0.02em]">
+      “{testimonial.quote}”
+    </blockquote>
+    <figcaption class="mt-7 flex items-center justify-center gap-3.5">
+      <span class="ph h-12 w-12 rounded-full" aria-hidden="true"></span>
+      <span class="text-left text-[15px]">
+        <strong class="block">{testimonial.name}</strong>
+        <span class="text-muted">{testimonial.role}</span>
+      </span>
+    </figcaption>
+  </figure>
+</section>

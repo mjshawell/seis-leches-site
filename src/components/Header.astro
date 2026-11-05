@@ -1,0 +1,27 @@
+---
+import { site, nav } from '../data/site';
+---
+<header class="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
+  <nav aria-label="Primary" class="container-site flex items-center justify-between gap-4 py-4">
+    <a href="/" class="flex min-h-11 items-center gap-3">
+      <span class="ph h-9 w-9 rounded-md" aria-hidden="true"></span>
+      <span class="text-xl font-extrabold tracking-tight">{site.name}</span>
+    </a>
+
+    <div class="hidden items-center gap-7 text-[15px] font-medium md:flex">
+      {nav.map((l) => <a href={l.href} class="hover:underline underline-offset-4">{l.label}</a>)}
+      <a href="#contact" class="btn-primary min-h-11 px-5 text-[15px]">Book a strategy call</a>
+    </div>
+
+    <details class="group relative md:hidden">
+      <summary class="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-md border border-line [&::-webkit-details-marker]:hidden" aria-label="Menu">
+        <svg class="group-open:hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        <svg class="hidden group-open:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+      </summary>
+      <div class="absolute right-0 top-14 flex w-64 flex-col gap-1 rounded-lg border border-line bg-paper p-3 shadow-lg">
+        {nav.map((l) => <a href={l.href} class="flex min-h-11 items-center rounded px-3 font-medium hover:bg-panel">{l.label}</a>)}
+        <a href="#contact" class="btn-primary mt-2 min-h-11">Book a strategy call</a>
+      </div>
+    </details>
+  </nav>
+</header>

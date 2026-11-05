@@ -1,0 +1,11 @@
+---
+const logos = Array.from({ length: 5 });
+---
+<section aria-label="Clients" class="border-y border-line py-8">
+  <div class="container-site flex flex-wrap items-center justify-between gap-x-8 gap-y-5">
+    <p class="eyebrow">Trusted by</p>
+    {logos.map(() => (
+      <span class="flex h-9 w-[120px] items-center justify-center rounded bg-fill text-xs text-muted">[LOGO]</span>
+    ))}
+  </div>
+</section>

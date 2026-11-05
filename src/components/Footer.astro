@@ -1,0 +1,14 @@
+---
+import { site, nav } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="on-ink border-t border-ink-line bg-ink py-10 text-ink-muted">
+  <div class="container-site flex flex-wrap items-center justify-between gap-5 text-sm">
+    <span class="text-lg font-extrabold text-paper">{site.name}</span>
+    <nav aria-label="Footer" class="flex flex-wrap gap-6">
+      {nav.slice(0, 3).map((l) => <a href={`/${l.href}`} class="hover:text-paper">{l.label}</a>)}
+      {site.social.map((l) => <a href={l.href} class="hover:text-paper">{l.label}</a>)}
+    </nav>
+    <span>© {year} {site.name} · {site.location}</span>
+  </div>
+</footer>

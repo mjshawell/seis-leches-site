@@ -1,0 +1,34 @@
+---
+import { services } from '../data/site';
+---
+<section id="services" class="container-site scroll-mt-20 pb-24 pt-28">
+  <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+    <div class="max-w-[640px]">
+      <p class="eyebrow mb-4">What we do</p>
+      <h2 class="heading-section">One loop, three disciplines. Each one feeds the next.</h2>
+    </div>
+    <p class="max-w-[380px] text-[17px] leading-relaxed text-body">
+      Hire us for one, or run the whole loop. Either way, you get one team and one source of truth.
+    </p>
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-3">
+    {services.map((s) => (
+      <article class:list={[
+        'flex flex-col gap-4 rounded-lg border-[1.5px] border-ink p-8',
+        s.featured ? 'on-ink bg-ink text-paper' : 'bg-paper',
+      ]}>
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-bold">{s.step}</span>
+          <span class:list={['h-11 w-11 rounded-full border-[1.5px]', s.featured ? 'border-paper' : 'border-ink']} aria-hidden="true"></span>
+        </div>
+        <h3 class="mt-2 text-[26px] font-bold leading-tight tracking-[-0.02em]">{s.title}</h3>
+        <p class:list={['leading-relaxed', s.featured ? 'text-ink-body' : 'text-body']}>{s.blurb}</p>
+        <ul class:list={['mt-2 flex list-disc flex-col gap-2 border-t pl-[18px] pt-5 text-[15px] font-medium', s.featured ? 'border-ink-line' : 'border-line']}>
+          {s.items.map((i) => <li>{i}</li>)}
+        </ul>
+        <a href={s.href} class="mt-auto inline-flex min-h-11 items-center pt-3 font-bold hover:underline underline-offset-4">{s.cta} →</a>
+      </article>
+    ))}
+  </div>
+</section>
