@@ -8,7 +8,7 @@ export const site = {
   // Booking page for strategy calls (Google Calendar appointment schedule or Calendly).
   // Keep in sync with "Booking link" in the lead tracker's Team & Settings tab.
   // Empty = thank-you page shows a plain confirmation instead of the calendar.
-  bookingUrl: '',
+  bookingUrl: 'https://calendly.com/mjshawell/30min',
   tagline: 'Build the brand. Drive the traffic. Prove it worked.',
   description:
     'Seis Leches is a full-funnel marketing agency: branding & social, performance & paid media, and SEO & marketing analytics automation.',
