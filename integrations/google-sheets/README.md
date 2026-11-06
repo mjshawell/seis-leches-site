@@ -11,6 +11,8 @@ Apps Script, which:
 - sends the lead an **instant branded confirmation** with the booking link (toggle in Team & Settings)
 - ignores duplicate deliveries and anything without the secret token
 
+Social listening lives in [`Listening.gs`](./Listening.gs); setup in [LISTENING.md](./LISTENING.md).
+
 Plus **`weeklyDigest`**: every Monday 8 AM (Pacific) the active team gets new leads by source and
 service, the pipeline by status, and any lead still "New" after 2+ days. The **Inbound Metrics**
 tab shows the same numbers with charts.
