@@ -43,6 +43,9 @@ No web app redeploy is needed: listening runs on its own schedule.
 - Reply in the thread first with something genuinely useful, follow each community's self-promotion
   rules, and only DM when invited or allowed. When it turns into a real conversation, add it to the
   **Leads** tab and set Status here to **Moved to Leads**.
-- Too noisy? Raise "Log items scoring at least" or add phrases to Skip. Too quiet? Add more F5Bot
+- Too noisy? Add phrases to **Skip if present**, then run **`rescoreListening`**: rows still "New"
+  that now match are marked "Not a fit" (greyed, not deleted). Skip entries that look like a site
+  (`youtube.com`, `linkedin.com/jobs`) match the link instead of the text.
+- Or raise "Log items scoring at least". Too quiet? Add more F5Bot
   keywords and Google Alerts.
 - Execution history: Apps Script → **Executions** (look for `runListening`).
