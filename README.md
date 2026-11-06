@@ -48,3 +48,14 @@ Override with the Netlify env var `SITE_INDEXING=on` or `off`.
 
 **At launch:** connect the domain in Netlify, wait for the next deploy, then submit
 `https://<domain>/sitemap-index.xml` in Google Search Console.
+
+## Design tools: Google Stitch (MCP)
+
+`.mcp.json` connects Claude Code to Google's official Stitch MCP server
+(`https://stitch.googleapis.com/mcp`) for generating and editing UI screens.
+
+- The API key is **never** stored in this repo. It's read from the `STITCH_API_KEY` environment variable.
+- **Cloud sessions:** Claude Code → Environment ⚙️ → add `STITCH_API_KEY`, then start a new session with this repo.
+- **Local:** `export STITCH_API_KEY=...` in your shell profile, then run `claude` from the repo folder.
+- Claude Code asks once to approve project MCP servers; approve `stitch`.
+- If a key is ever exposed, rotate it in Stitch settings and update the env var.
