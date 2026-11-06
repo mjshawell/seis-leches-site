@@ -19,6 +19,32 @@ to the **Listening** tab of the Lead Tracker, and emails you anything **Hot** ri
 - Anything in **Skip if present** (for-hire posts, other agencies, job seekers) is dropped
 - Logged at **3+** (Low), Warm at **5+**, **Hot at 7+** (emailed). Thresholds are in Listening Setup I2:I3.
 
+## AI check (Gemini, free tier)
+
+Posts that pass the keyword rules are sent to Google's Gemini API, 15 at a time, with one question:
+*is this a business looking to hire outside marketing help, or an owner asking for help with an urgent
+marketing problem?* Job ads, self-promotion, articles and videos come back "not a lead".
+
+| AI verdict | Result |
+| --- | --- |
+| Lead, 85%+ confident (or keyword score 7+) | **Hot**, emailed |
+| Lead, less confident | Warm |
+| Not a lead, under 70% confident | Logged as Low, so a person can judge |
+| Not a lead, 70%+ confident | Not logged (by `rescoreListening`: marked Not a fit) |
+| AI unavailable (no key, quota, outage) | Keyword scoring only; `rescoreListening` retries later |
+
+The verdict, confidence, best-fit service and a one-line reason go in the **AI check** column.
+Turn it on or off and choose the model in **Listening Setup I6:I7** (default `gemini-flash-lite-latest`,
+Google's alias for its current low-cost model; change it if Google retires the alias).
+Post text is treated as untrusted data: the prompt tells the model never to follow instructions inside it.
+
+**Setup:** create a free API key at https://aistudio.google.com/apikey, then in Apps Script open
+**Project Settings ⚙️ → Script Properties → Add script property**: `GEMINI_API_KEY` = your key.
+Run **`testAiCheck`** (three samples, writes nothing), then **`rescoreListening`** to check existing rows.
+
+Free-tier limits and data terms are set by Google and can change. At hourly runs this uses roughly
+one request an hour. Only public post text is sent. Check AI Studio for your current limits.
+
 ## One-time setup (about 15 minutes)
 
 1. **F5Bot:** sign up at https://f5bot.com with the Gmail that owns the Lead Tracker, and add the
