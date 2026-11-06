@@ -74,7 +74,7 @@ function runListening() {
     const key = normUrl_(item.link);
     if (!key || seen.has(key)) return;
     seen.add(key);
-    const s = scoreItem_(item.title + ' ' + item.snippet, setup);
+    const s = scoreItem_(item.title + ' ' + item.snippet, setup, item.link);
     if (s.excluded || s.score < setup.minScore) return;
     const tier = s.score >= setup.hotScore ? 'Hot' : s.score >= LISTEN.WARM_AT ? 'Warm' : 'Low';
     const text = (item.title + (item.snippet ? ' | ' + item.snippet : '')).slice(0, 500);
@@ -189,11 +189,18 @@ function fromBluesky_(queries) {
 
 /* -------------------------------------------------------------- scoring */
 
-/** Pure. Direct ask: +5 once. Pain: +3 each (max 2). Place/niche: +2 each (max 2). */
-function scoreItem_(text, setup) {
-  const t = ' ' + String(text).toLowerCase().replace(/\s+/g, ' ') + ' ';
-  const hits = (list) => list.filter((p) => p && t.includes(p));
-  if (hits(setup.exclude).length) return { excluded: true, score: 0, matched: [] };
+/**
+ * Pure. Direct ask: +5 once. Pain: +3 each (max 2). Place/niche: +2 each (max 2).
+ * Skip list: phrases match the text; entries that look like a site ("youtube.com",
+ * "linkedin.com/jobs") match the link instead.
+ */
+function scoreItem_(text, setup, link) {
+  const t = ' ' + decodeEntities_(String(text)).toLowerCase().replace(/\s+/g, ' ') + ' ';
+  const url = normUrl_(link || '');
+  const isSite = (p) => /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/.test(p);
+  const hits = (list) => list.filter((p) => p && !isSite(p) && t.includes(p));
+  const siteSkip = setup.exclude.filter((p) => isSite(p) && url && (url === p || url.startsWith(p) || url.includes('.' + p)));
+  if (siteSkip.length || hits(setup.exclude).length) return { excluded: true, score: 0, matched: [] };
   const direct = hits(setup.direct);
   const pain = hits(setup.pain);
   const boost = hits(setup.boost);
@@ -216,6 +223,38 @@ function getListeningSetup_() {
     alertEmail: String(alertEmail || '').trim(),
     enabled: enabled !== false,
   };
+}
+
+/**
+ * Run from the editor after changing the phrase lists: re-scores every row still
+ * marked "New" with the current rules. Rows that now hit the skip list become
+ * "Not a fit" (greyed out, not deleted), and the rest get updated scores and tiers.
+ */
+function rescoreListening() {
+  const setup = getListeningSetup_();
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(LISTEN.SHEET);
+  const n = sheet.getLastRow() - 1;
+  if (n < 1) return;
+  const range = sheet.getRange(2, 1, n, 10);
+  const rows = range.getValues();
+  let skipped = 0;
+  let updated = 0;
+  rows.forEach((r) => {
+    if (r[7] !== 'New') return;
+    r[2] = decodeEntities_(r[2]);
+    const s = scoreItem_(r[2], setup, r[3]);
+    if (s.excluded || s.score < setup.minScore) {
+      r[7] = 'Not a fit';
+      skipped++;
+      return;
+    }
+    r[4] = s.matched.join(', ');
+    r[5] = s.score;
+    r[6] = s.score >= setup.hotScore ? 'Hot' : s.score >= LISTEN.WARM_AT ? 'Warm' : 'Low';
+    updated++;
+  });
+  range.setValues(rows);
+  Logger.log('Re-scored ' + updated + ', marked ' + skipped + ' as Not a fit.');
 }
 
 /* ----------------------------------------------------------------- email */
@@ -251,11 +290,19 @@ function stripTags_(html) {
   return decodeEntities_(String(html).replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
+const ENTITIES_ = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', middot: '·', hellip: '…', mdash: '—',
+  ndash: '–', rsquo: "'", lsquo: "'", rdquo: '"', ldquo: '"', bull: '•', copy: '©', trade: '™', reg: '®',
+};
+
+/** Decodes HTML entities, twice, because Google Alerts double-encodes its snippets. */
 function decodeEntities_(s) {
-  return String(s)
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
-    .replace(/&amp;/g, '&');
+  const once = (x) => String(x).replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+    if (e[0] === '#') return String.fromCharCode(e[1].toLowerCase() === 'x' ? parseInt(e.slice(2), 16) : Number(e.slice(1)));
+    const v = ENTITIES_[e.toLowerCase()];
+    return v === undefined ? m : v;
+  });
+  return once(once(s));
 }
 
 /* ------------------------------------------------------------------ tests */
